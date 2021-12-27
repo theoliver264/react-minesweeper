@@ -28,8 +28,6 @@ export function Board({ cellSize }: { cellSize: string }) {
     incrementFlags,
     flagCount,
     incrementRevealed,
-    maxFreeSquares,
-    squaresRevealed,
   } = useContext(GameStateContext);
 
   useEffect(() => {
@@ -148,14 +146,12 @@ export function Board({ cellSize }: { cellSize: string }) {
     <Grid templateRows="auto 1fr" gap="4px">
       <Flex flexDir="row" justifyContent={"space-between"}>
         <Flags />
-        <p>{maxFreeSquares}</p>
         <img
           src={gameOver ? "/assets/facedead.gif" : "/assets/facesmile.gif"}
           width="26px"
           height="26px"
           onClick={clickFace}
         />
-        <p>{squaresRevealed}</p>
         <Clock />
       </Flex>
 
