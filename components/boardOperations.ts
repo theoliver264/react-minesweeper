@@ -144,3 +144,107 @@ function openMarkedCells(b: Cell[][], incrementRevealed: () => void) {
   }
   return newBoard;
 }
+
+export function handleGameFirstClick(
+  board: Cell[][],
+  row: number,
+  col: number
+) {
+  const bombsToPlace = board[row][col].neighborBombs;
+
+  let returnBoard = [...board];
+
+  //remove bombs from 3x3 area
+  for (let x = row - 1; x <= row + 1; x++) {
+    for (let y = col - 1; y <= col + 1; y++) {
+      if (
+        x >= 0 &&
+        x <= board.length - 1 &&
+        y >= 0 &&
+        y <= board[0].length - 1
+      ) {
+        if (board[x][y].isBomb) {
+          board[x][y].unsetBomb();
+        }
+      }
+    }
+  }
+
+  //place bombs outside area
+  for (let i = 0; i < bombsToPlace; i++) {
+    let bombPlaced = false;
+    let newRow = Math.floor(Math.random() * board.length);
+    let newCol = Math.floor(Math.random() * board[0].length);
+    const newBoard = [...board];
+
+    //find place ouside of 3x3 area
+    while (
+      newRow < row + 1 &&
+      newRow > row - 1 &&
+      newCol < col + 1 &&
+      newCol > col - 1
+    ) {
+      newRow = Math.floor(Math.random() * board.length);
+      newCol = Math.floor(Math.random() * board[0].length);
+    }
+
+    while (!bombPlaced) {
+      if (
+        newRow >= 0 &&
+        newRow <= board.length - 1 &&
+        newCol >= 0 &&
+        newCol <= board[0].length - 1 &&
+        !newBoard[newRow][newCol].isBomb
+      ) {
+        newBoard[newRow][newCol].setBomb();
+        bombPlaced = true;
+      } else {
+        while (true) {
+          newRow = Math.floor(Math.random() * board.length);
+          newCol = Math.floor(Math.random() * board[0].length);
+
+          if (
+            !(
+              newRow > row + 1 &&
+              newRow < row - 1 &&
+              newCol < col + 1 &&
+              newCol > col - 1
+            )
+          ) {
+            break;
+          }
+        }
+      }
+    }
+    returnBoard = newBoard;
+  }
+
+  //recalculate neighbors
+  for (let i = 0; i < returnBoard.length; i++) {
+    for (let j = 0; j < returnBoard[0].length; j++) {
+      returnBoard[i][j].setNeighbors(countNeighborBombs(board, i, j));
+    }
+  }
+
+  return returnBoard;
+}
+
+function countNeighborBombs(board: Cell[][], row: number, col: number) {
+  let count = 0;
+  for (let x = row - 1; x <= row + 1; x++) {
+    for (let y = col - 1; y <= col + 1; y++) {
+      if (
+        x >= 0 &&
+        x <= board.length - 1 &&
+        y >= 0 &&
+        y <= board[0].length - 1
+      ) {
+        if (board[x][y].isBomb) {
+          count++;
+        }
+      }
+    }
+  }
+
+  return count;
+}

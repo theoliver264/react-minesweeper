@@ -12,6 +12,10 @@ export class Cell {
     this.isBomb = true;
   }
 
+  public unsetBomb() {
+    this.isBomb = false;
+  }
+
   public setRevealed() {
     this.isRevealed = true;
   }
@@ -38,5 +42,9 @@ export class Cell {
 
   public unmark() {
     this.isMarked = false;
+  }
+
+  public setNeighbors(num: number) {
+    this.neighborBombs = num;
   }
 }

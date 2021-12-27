@@ -2,6 +2,7 @@ import { Flex, Grid } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { GameStateContext } from "../context/gameState";
 import {
+  handleGameFirstClick,
   initializeBoard,
   macroOpen,
   revealAllBombs,
@@ -54,7 +55,10 @@ export function Board({ cellSize }: { cellSize: string }) {
         return;
       }
 
+      //Handle first click of game
       if (!gameStarted) {
+        let b = handleGameFirstClick(newBoard, row, col);
+        setBoard(b);
         startGame();
       }
 
@@ -139,6 +143,7 @@ export function Board({ cellSize }: { cellSize: string }) {
     },
     [board, setBoard]
   );
+
   return (
     <Grid templateRows="auto 1fr" gap="4px">
       <Flex flexDir="row" justifyContent={"space-between"}>
